@@ -8,15 +8,18 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -O2")
 set(CMAKE_CXX_FLAGS "-fPIC")  
 set(CMAKE_C_FLAGS "-fPIC") 
 add_definitions(-D__STDC_FORMAT_MACROS)
-#add_definitions(-DNDEBUG)
+add_definitions(-DNDEBUG)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${CMAKE_SOURCE_DIR}/)
 include_directories(${CMAKE_SOURCE_DIR}/logging)
 include_directories(${CMAKE_SOURCE_DIR}/base)
+include_directories(${CMAKE_SOURCE_DIR}/media)
 set(media_LIB
-h264_bit_reader.cc
-h264_parser.cc
+media/h264_bit_reader.cc
+media/h264_parser.cc
+media/media_info.cc
+media/media_util.cc
 )
 add_library(media STATIC ${media_LIB})
 
@@ -25,7 +28,3 @@ add_library(media STATIC ${media_LIB})
 set(EXECUTABLE_NAME "a_main")
 add_executable(${EXECUTABLE_NAME} main.cc)
 target_link_libraries(${EXECUTABLE_NAME}  media)
-
-set(EXECUTABLE_NAME "f_main")
-add_executable(${EXECUTABLE_NAME} file_map.cc)
-target_link_libraries(${EXECUTABLE_NAME})

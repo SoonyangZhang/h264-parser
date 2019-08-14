@@ -477,7 +477,9 @@ class MEDIA_EXPORT H264Parser {
   // This returns the subsample information for the last NALU that was output
   // from AdvanceToNextNALU().
   std::vector<SubsampleEntry> GetCurrentSubsamples();
-
+  off_t get_offset() const{
+      return bytes_left_;
+  }
  private:
   // Move the stream pointer to the beginning of the next NALU,
   // i.e. pointing at the next start code.
