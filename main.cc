@@ -42,8 +42,8 @@ void printf_slice_info(media::H264SliceHeader &slice,int len){
 }
 int main()
 {
-	char *h264_in="1280x720.h264";
-	char *info_out="1280x720";
+	char *h264_in="../../data/1280x720.h264";
+	char *info_out="../../data/1280x720";
     int fd=0;
     if((fd=open(h264_in,O_RDONLY,S_IRGRP))<0){
         printf("open failed \n");
@@ -69,8 +69,12 @@ int main()
     parser.SetStream((uint8_t*)start_fp,length);
     int id;
     int f=0;
-    int total_to_parse=10;
+    int total_to_parse=20;
     int parse_len=0;
+    Frame frame;
+    std::string out_h264("../../data/out.h264");
+    FrameSinkToFile sink(out_h264);
+    frame.RegisterSink(&sink);
     while(f<total_to_parse){
         media::H264SliceHeader shdr;
         media::H264SEIMessage sei_msg;
@@ -82,6 +86,7 @@ int main()
         len=length-parser.get_offset()-parse_len;
         parse_len+=len;
         start_code_len=len-nalu.size;
+        frame.OnData(nalu.nal_unit_type,nalu.data,nalu.size,start_code_len);
         if(nalu.nal_unit_type==H264NALU::kIDRSlice||nalu.nal_unit_type==H264NALU::kNonIDRSlice){
 
         }else{

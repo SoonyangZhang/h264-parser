@@ -28,3 +28,4 @@ add_library(media STATIC ${media_LIB})
 set(EXECUTABLE_NAME "a_main")
 add_executable(${EXECUTABLE_NAME} main.cc)
 target_link_libraries(${EXECUTABLE_NAME}  media)
+
