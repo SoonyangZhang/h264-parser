@@ -9,8 +9,6 @@
 #include <stdlib.h>
 
 #include <string>
-#include "range.h"
-#include "optional.h"
 #include "h264_bit_reader.h"
 #include "h264_parser.h"
 #include "logging.h"
@@ -109,21 +107,16 @@ int main()
         }
         case H264NALU::kPPS:{
             CHECK_EQ(parser.ParsePPS(&id), H264Parser::kOk);
-            //int len=length-parser.get_offset()-parse_len;
-            //parse_len+=len;
             break;            
         }  
         case H264NALU::kSEIMessage:{
-            //len=length-parser.get_offset()-parse_len;
-            //parse_len+=len;
+
             CHECK_EQ(parser.ParseSEI(&sei_msg), H264Parser::kOk);
             break;            
         }
         default:{
             // Skip unsupported NALU.
             DLOG(INFO)<< "Skipping unsupported NALU";
-            //int len=length-parser.get_offset()-parse_len;
-            //parse_len+=len;
             break;            
         }
         }   

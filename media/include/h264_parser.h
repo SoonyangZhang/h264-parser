@@ -6,14 +6,10 @@
 #include <map>
 #include <memory>
 #include <vector>
-
-#include "media_export.h"
-#include "logging.h"
-#include "h264_bit_reader.h"
 #include "range.h"
-//#include "optional.h"
+#include "media_export.h"
+#include "h264_bit_reader.h"
 #include "video_codecs.h"
-#include "base/stl_util.h"
 #define NOTREACHED() CHECK(false)
 #define DVLOG(x) VLOG(x)
 namespace media {

@@ -1,5 +1,7 @@
 #include <memory.h>
+#include "logging.h"
 #include "h264_parser.h"
+#include "base/stl_util.h"
 #include "base/numerics/safe_math.h"
 #include "subsample_entry.h"
 namespace media {

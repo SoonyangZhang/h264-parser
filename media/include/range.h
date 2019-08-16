@@ -1,12 +1,9 @@
 #pragma once
 #include <stddef.h>
 #include <stdint.h>
-
 #include <algorithm>
 #include <ostream>
 #include <vector>
-#include "logging.h"
-#include "media_export.h"
 namespace media {
 
 // Ranges allows holding an ordered list of ranges of [start,end) intervals.
@@ -103,7 +100,7 @@ MEDIA_EXPORT void
 
 template<class T>
 void Ranges<T>::DCheckLT(const T& lhs, const T& rhs) const {
-  DCHECK_LT(lhs, rhs);
+  //DCHECK_LT(lhs, rhs);
 }
 
 template<class T>

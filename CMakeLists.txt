@@ -14,12 +14,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${CMAKE_SOURCE_DIR}/)
 include_directories(${CMAKE_SOURCE_DIR}/logging)
 include_directories(${CMAKE_SOURCE_DIR}/base)
-include_directories(${CMAKE_SOURCE_DIR}/media)
+include_directories(${CMAKE_SOURCE_DIR}/media/include)
 set(media_LIB
-media/h264_bit_reader.cc
-media/h264_parser.cc
-media/media_info.cc
-media/media_util.cc
+media/src/h264_bit_reader.cc
+media/src/h264_parser.cc
+media/src/media_info.cc
+media/src/media_util.cc
 )
 add_library(media STATIC ${media_LIB})
 

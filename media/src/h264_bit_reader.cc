@@ -1,4 +1,5 @@
 #include "h264_bit_reader.h"
+#include "logging.h"
 namespace media {
 
 H264BitReader::H264BitReader()
