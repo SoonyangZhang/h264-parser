@@ -4,6 +4,7 @@
 #include <utility>
 #include <fstream>
 #include <stdint.h>
+#include <vector>
 namespace media{
 const char* convert_slice_string(int type);
 const char* convert_nalu_string(int type);
@@ -42,26 +43,38 @@ private:
 	int offset_{0};
 	int len_{0};
 };
+struct NaluInfo{
+NaluInfo(int type,int off,int slice,const uint8_t*data,uint8_t start):
+nalutype(type),off(off),slicetype(slice),data(data),start_code(start){}
+int nalutype;
+int off;
+int slicetype;
+const uint8_t *data;
+uint8_t start_code;
+};
 class FrameSinkInterface{
 public:
-	virtual void OnDataAvalable(const char *data,int size)=0;
+	virtual void OnFrameAvalable(const std::vector<NaluInfo> &frame)=0;
 	virtual ~FrameSinkInterface(){}
 };
+
 class Frame{
 public:
 	Frame(){}
 	void RegisterSink(FrameSinkInterface*sink);
-	void OnData(int nalutype,const uint8_t *data,int off,int start_code_len);
+	void OnData(int nalutype,int slicetype,const uint8_t *data,int off,int start_code_len);
 private:
+	int GetFrameSize();
 	FrameSinkInterface *sink_{nullptr};
-	DataBuffer buffer_;
+	//DataBuffer buffer_;
+	std::vector<NaluInfo> h264_frame_;
 	int frame_no_{1};
 };
 class FrameSinkToFile:public FrameSinkInterface{
 public:
 	FrameSinkToFile(std::string &name);
 	~FrameSinkToFile();
-	void OnDataAvalable(const char *data,int size) override;
+	void OnFrameAvalable(const std::vector<NaluInfo> &frame) override;
 private:
 	std::fstream f_out_;
 };

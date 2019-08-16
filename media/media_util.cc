@@ -92,26 +92,26 @@ int DataBuffer::Copy(char *dst,int size){
 void Frame::RegisterSink(FrameSinkInterface*sink){
 	sink_=sink;
 }
-const uint8_t start3[]={0x00,0x00,0x01};
-const uint8_t start4[]={0x00,0x00,0x00,0x01};
-void Frame::OnData(int nalutype,const uint8_t *data,int off,int start_code_len){
+void Frame::OnData(int nalutype,int slicetype,const uint8_t *data,int off,int start_code_len){
 	if(start_code_len==4){
 		if(nalutype==H264NALU::kIDRSlice||nalutype==H264NALU::kNonIDRSlice){
-			std::cout<<frame_no_<<" "<<buffer_.Size()<<std::endl;
+			std::cout<<frame_no_<<" len "<<GetFrameSize()<<std::endl;
 			if(sink_){
-				sink_->OnDataAvalable((char*)buffer_.data(),buffer_.Size());
+				sink_->OnFrameAvalable(h264_frame_);
 			}
-			buffer_.Reset();
+			std::vector<NaluInfo> null_vec;
+			h264_frame_.swap(null_vec);
 			frame_no_++;
 		}
 	}
-	if(start_code_len==3){
-		buffer_.Append(start3,sizeof(start3));
+	h264_frame_.emplace_back(nalutype,off,slicetype,data,(uint8_t)start_code_len);
+}
+int Frame::GetFrameSize(){
+	int len=0;
+	for(auto it=h264_frame_.begin();it!=h264_frame_.end();it++){
+		len+=(it->start_code+it->off);
 	}
-	if(start_code_len==4){
-		buffer_.Append(start4,sizeof(start4));
-	}
-	buffer_.Append(data,off);
+	return len;
 }
 FrameSinkToFile::FrameSinkToFile(std::string &name){
 	f_out_.open(name.c_str(),std::ios::out|std::ios::binary);
@@ -121,9 +121,23 @@ FrameSinkToFile::~FrameSinkToFile(){
 		f_out_.close();
 	}
 }
-void FrameSinkToFile::OnDataAvalable(const char *data,int size){
+const char start3[]={0x00,0x00,0x01};
+const char start4[]={0x00,0x00,0x00,0x01};
+void FrameSinkToFile::OnFrameAvalable(const std::vector<NaluInfo> &frame){
 	if(f_out_.is_open()){
-		f_out_.write(data,size);
+		for(auto it=frame.begin();it!=frame.end();it++){
+			int start_code_len=it->start_code;
+			if(3==start_code_len){
+				f_out_.write(start3,sizeof(start3));
+			}
+			if(4==start_code_len){
+				f_out_.write(start4,sizeof(start4));
+			}
+			const uint8_t *data=it->data;
+			int len=it->off;
+			f_out_.write((char*)data,len);
+		}
+
 	}
 }
 }

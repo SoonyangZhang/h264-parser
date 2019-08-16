@@ -86,11 +86,11 @@ int main()
         len=length-parser.get_offset()-parse_len;
         parse_len+=len;
         start_code_len=len-nalu.size;
-        frame.OnData(nalu.nal_unit_type,nalu.data,nalu.size,start_code_len);
         if(nalu.nal_unit_type==H264NALU::kIDRSlice||nalu.nal_unit_type==H264NALU::kNonIDRSlice){
 
         }else{
         	record.OnInfo(nalu.nal_unit_type,0,start_code_len,len);
+        	frame.OnData(nalu.nal_unit_type,-1,nalu.data,nalu.size,start_code_len);
         }
         switch (nalu.nal_unit_type){     
         case H264NALU::kIDRSlice:
@@ -98,6 +98,7 @@ int main()
             CHECK_EQ(parser.ParseSliceHeader(nalu, &shdr), H264Parser::kOk);
             printf_slice_info(shdr,len);
             record.OnInfo(nalu.nal_unit_type,shdr.slice_type,start_code_len,len);
+            frame.OnData(nalu.nal_unit_type,shdr.slice_type,nalu.data,nalu.size,start_code_len);
             break;            
         }   
         case H264NALU::kSPS:{
